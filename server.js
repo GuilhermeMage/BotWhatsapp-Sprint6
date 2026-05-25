@@ -23,7 +23,7 @@ app.post("Webhook", async (req,res) =>{
         const body = req.body;
         const evento = body.event;
 
-        if (data.event === 'messages.upsert') {
+        if (evento === "messages.upsert" || evento === "MESSAGES_UPSERT") {
             const msg = data.data[0];
             const numero = msg.key.remoteJid;
             const texto = msg.message?.conversation || '';   
