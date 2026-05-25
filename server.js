@@ -28,6 +28,10 @@ app.post("Webhook", async (req,res) =>{
             const numero = msg.key.remoteJid;
             const texto = msg.message?.conversation || '';   
 
+        if (fromMe) {
+        return res.status(200).send("Mensagem enviada por mim. Ignorada.");
+    }
+
 
         if (texto.toLowerCase().trim() === 'oi') {
             await enviarResposta(numero, 'Olá, Sou o bot da Reobote!');
