@@ -15,7 +15,7 @@ app.get("/", (req,res) =>{
     res.send("Teste bot rodando")
 });
 
-app.post("Webhook", async (req,res) =>{
+app.post("webhook", async (req,res) =>{
     try {
         console.log("Webhook recebido: ");
         console.log(JSON.stringify(req.body, null, 2));
