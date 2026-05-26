@@ -36,19 +36,22 @@ app.post("/webhook", async (req, res) => {
       console.log("Número:", numero);
       console.log("Texto:", texto);
 
+      const t = texto.toLowerCase().trim();
+
       if (fromMe) {
         return res.status(200).send("Mensagem enviada por mim. Ignorada.");
         }
 
-      if (texto.toLowerCase().trim() === "valor"|| texto.includes('quanto')) {
+
+      if (t.includes("valor") || t.includes('quanto') || t.includes('preço')) {
         await enviarResposta(numero, '📋 TABELA DE PREÇOS:\n• Plano Básico: R$ 49/mês\n• Pro: R$ 99/mês\n• Enterprise: Sob consulta');
       }
 
-      else if (texto.toLowerCase().trim() === "horário" || texto.includes('hora') || texto.includes('funciona')) {
+      else if (t.includes("horário") || t.includes('hora') || t.includes('funcionamento') || t.includes('abre')) {
         await enviarResposta(numero, "🕒 FUNCIONAMENTO:\nSeg a Sex: 08h às 18h\nSáb: 09h às 13h\nDom: Fechado");
       }
 
-      else if (texto.toLowerCase().trim() === "ajuda" || texto.includes('problema')) {
+      else if (t.includes("ajuda") || t.includes('problema') || t.includes('suporte')) {
         await enviarResposta(numero, "🛠️ SUPORTE:\nEnvie um e-mail para suporte@reobote.io ou aguarde um atendente humano.");
       }
 
