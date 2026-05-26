@@ -37,7 +37,6 @@ app.post("/webhook", async (req, res) => {
       console.log("Texto:", texto);
 
       if (fromMe) {
-        console.log("Mensagem enviada por mim. Ignorada.");
         return res.status(200).send("Mensagem enviada por mim. Ignorada.");
         }
 
