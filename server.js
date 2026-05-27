@@ -2,6 +2,7 @@ import express from "express";
 import "dotenv/config";
 
 const app = express();
+const cadastros = {};
 
 app.use(express.json());
 
@@ -37,20 +38,21 @@ app.post("/webhook", async (req, res) => {
       console.log("Texto:", texto);
 
       const t = texto.toLowerCase().trim();
-      const cadastros = {};
+      
+      
 
         if (fromMe) {
+        console.log("Mensagem enviada por mim. Ignorada.");
         return res.status(200).send("Mensagem enviada por mim. Ignorada.");
         }
 
         if (!cadastros[numero]) 
             { 
-                if (t.includes('cadastrar') || t.includes('cadastro')) { cadastros[numero] = { etapa: 1 }; await enviarResposta(numero, '📝 Vamos começar! Digite seu nome completo:'); return res.status(200).send('OK'); }
+                if (t.includes('cadastrar') || t.includes('cadastro')) { cadastros[numero] = { etapa: 1 }; 
+                await enviarResposta(numero, '📝 Vamos começar! Digite seu nome completo:'); return res.status(200).send('OK'); }
         }
-
-
         const user = cadastros[numero];
-
+        
         if (user) {
         switch(user.etapa) {
             case 1:
@@ -75,7 +77,7 @@ app.post("/webhook", async (req, res) => {
             }
         } 
         else {
-        await enviarResposta(numero, ' Olá! Digite "cadastrar" para iniciar seu registro ou "menu" para ver opções.');
+        await enviarResposta(numero, ' Olá! Digite "cadastrar" para iniciar seu registro.');
         }
 
     }
