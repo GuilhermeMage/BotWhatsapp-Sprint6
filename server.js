@@ -37,27 +37,46 @@ app.post("/webhook", async (req, res) => {
       console.log("Texto:", texto);
 
       const t = texto.toLowerCase().trim();
+      const cadastro = {};
 
-      if (fromMe) {
+        if (fromMe) {
         return res.status(200).send("Mensagem enviada por mim. Ignorada.");
         }
 
+        if (!cadastros[numero]) 
+            { 
+                if (t.includes('cadastrar') || t.includes('cadastro')) { cadastros[numero] = { etapa: 1 }; await enviarResposta(numero, '📝 Vamos começar! Digite seu nome completo:'); return res.status(200).send('OK'); }
+        }
 
-      if (t.includes("valor") || t.includes('quanto') || t.includes('preço')) {
-        await enviarResposta(numero, '📋 TABELA DE PREÇOS:\n• Plano Básico: R$ 49/mês\n• Pro: R$ 99/mês\n• Enterprise: Sob consulta');
-      }
 
-      else if (t.includes("horário") || t.includes('hora') || t.includes('funcionamento') || t.includes('abre')) {
-        await enviarResposta(numero, "🕒 FUNCIONAMENTO:\nSeg a Sex: 08h às 18h\nSáb: 09h às 13h\nDom: Fechado");
-      }
-
-      else if (t.includes("ajuda") || t.includes('problema') || t.includes('suporte')) {
-        await enviarResposta(numero, "🛠️ SUPORTE:\nEnvie um e-mail para suporte@reobote.io ou aguarde um atendente humano.");
-      }
-
-      else {
-        await enviarResposta(numero, "👋 Olá! Sou o assistente da Reobote.\nDigite: preço | horário | suporte");
-      }
+        const user = cadastros[numero];
+        
+        if (user) {
+        switch(user.etapa) {
+            case 1:
+                user.nome = texto;
+                user.etapa = 2;
+                await enviarResposta(numero, `Olá ${user.nome}! Agora digite seu E-MAIL:`);
+                break;
+            case 2:
+                user.email = texto;
+                user.etapa = 3;
+                await enviarResposta(numero, 'Qual seu interesse? (cursos | suporte | vendas)');
+                break;
+            case 3:
+                user.interesse = texto;
+                console.log(`✅ LEAD CAPTURADO: ${JSON.stringify(user)}`);
+                await enviarResposta(numero, `🎉 Cadastro finalizado!\n\nResumo:\n👤 Nome: ${user.nome}\n📧 E-mail: ${user.email}\n🎯 Interesse: ${user.interesse}\n\nEntraremos em contato em breve!`);
+                delete cadastros[numero]; 
+                break;
+                default:
+                await enviarResposta(numero, 'Fluxo encerrado. Digite "cadastrar" para recomeçar.');
+                delete cadastros[numero];
+            }
+        } 
+        else {
+        await enviarResposta(numero, ' Olá! Digite "cadastrar" para iniciar seu registro ou "menu" para ver opções.');
+        }
 
     }
 
