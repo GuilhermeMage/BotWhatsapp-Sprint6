@@ -37,7 +37,7 @@ app.post("/webhook", async (req, res) => {
       console.log("Texto:", texto);
 
       const t = texto.toLowerCase().trim();
-      const cadastro = {};
+      const cadastros = {};
 
         if (fromMe) {
         return res.status(200).send("Mensagem enviada por mim. Ignorada.");
@@ -50,7 +50,7 @@ app.post("/webhook", async (req, res) => {
 
 
         const user = cadastros[numero];
-        
+
         if (user) {
         switch(user.etapa) {
             case 1:
